@@ -42,6 +42,7 @@ pub struct Columns {
     pub group: bool,
     pub git: bool,
     pub octal: bool,
+    pub security_context: bool,
 
     // Defaults to true:
     pub permissions: bool,
@@ -85,6 +86,10 @@ impl Columns {
             columns.push(Column::Group);
         }
 
+        if self.security_context {
+            columns.push(Column::SecurityContext);
+        }
+
         if self.time_types.modified {
             columns.push(Column::Timestamp(TimeType::Modified));
         }
@@ -123,6 +128,7 @@ pub enum Column {
     Inode,
     GitStatus,
     Octal,
+    SecurityContext,
 }
 
 /// Each column can pick its own **Alignment**. Usually, numbers are
@@ -151,16 +157,17 @@ impl Column {
     /// to have a header row printed.
     pub fn header(self) -> &'static str {
         match self {
-            Self::Permissions   => "Permissions",
-            Self::FileSize      => "Size",
-            Self::Timestamp(t)  => t.header(),
-            Self::Blocks        => "Blocks",
-            Self::User          => "User",
-            Self::Group         => "Group",
-            Self::HardLinks     => "Links",
-            Self::Inode         => "inode",
-            Self::GitStatus     => "Git",
-            Self::Octal         => "Octal",
+            Self::Permissions     => "Permissions",
+            Self::FileSize        => "Size",
+            Self::Timestamp(t)    => t.header(),
+            Self::Blocks          => "Blocks",
+            Self::User            => "User",
+            Self::Group           => "Group",
+            Self::HardLinks       => "Links",
+            Self::Inode           => "inode",
+            Self::GitStatus       => "Git",
+            Self::Octal           => "Octal",
+            Self::SecurityContext => "Security Context",
         }
     }
 }
@@ -421,6 +428,9 @@ impl<'a, 'f> Table<'a> {
             }
             Column::Group => {
                 file.group().render(self.theme, &*self.env.lock_users(), self.user_format)
+            }
+            Column::SecurityContext => {
+                file.security_context().render(self.theme)
             }
             Column::GitStatus => {
                 self.git_status(file).render(self.theme)

@@ -245,3 +245,12 @@ impl Default for Git {
         }
     }
 }
+
+pub enum SecurityContextType<'a> {
+    SELinux(&'a String),
+    None
+}
+
+pub struct SecurityContext<'a> {
+    pub context: SecurityContextType<'a>,
+}
