@@ -341,6 +341,7 @@ impl<'dir> File<'dir> {
     }
 
     /// This file’s last changed timestamp, if available on this platform.
+    #[allow(clippy::unnecessary_wraps)]
     pub fn changed_time(&self) -> Option<SystemTime> {
         let (mut sec, mut nanosec) = (self.metadata.ctime(), self.metadata.ctime_nsec());
 

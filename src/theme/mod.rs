@@ -194,7 +194,7 @@ impl ExtensionMappings {
     }
 
     fn add(&mut self, pattern: glob::Pattern, style: Style) {
-        self.mappings.push((pattern, style))
+        self.mappings.push((pattern, style));
     }
 }
 
@@ -219,8 +219,7 @@ impl render::FiletypeColours for Theme {
 
 impl render::GitColours for Theme {
     fn not_modified(&self)  -> Style { self.ui.punctuation }
-    #[allow(clippy::new_ret_no_self)]
-    fn new(&self)           -> Style { self.ui.git.new }
+    fn added(&self)         -> Style { self.ui.git.new }
     fn modified(&self)      -> Style { self.ui.git.modified }
     fn deleted(&self)       -> Style { self.ui.git.deleted }
     fn renamed(&self)       -> Style { self.ui.git.renamed }

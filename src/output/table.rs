@@ -167,7 +167,7 @@ impl Column {
 
 
 /// Formatting options for file sizes.
-#[allow(clippy::pub_enum_variant_names)]
+#[allow(clippy::enum_variant_names)]
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub enum SizeFormat {
 
@@ -310,7 +310,7 @@ fn determine_time_zone() -> TZResult<TimeZone> {
             } else {
                 format!("/usr/share/zoneinfo/{}", {
                     if file.starts_with(':') {
-                        file.replacen(":", "", 1)
+                        file.replacen(':', "", 1)
                     } else {
                         file
                     }
@@ -382,7 +382,7 @@ impl<'a, 'f> Table<'a> {
     }
 
     pub fn add_widths(&mut self, row: &Row) {
-        self.widths.add_widths(row)
+        self.widths.add_widths(row);
     }
 
     fn permissions_plus(&self, file: &File<'_>, xattrs: bool) -> f::PermissionsPlus {

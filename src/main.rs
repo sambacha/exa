@@ -18,6 +18,7 @@
 #![allow(clippy::non_ascii_literal)]
 #![allow(clippy::option_if_let_else)]
 #![allow(clippy::too_many_lines)]
+#![allow(clippy::unnested_or_patterns)]
 #![allow(clippy::unused_self)]
 #![allow(clippy::upper_case_acronyms)]
 #![allow(clippy::wildcard_imports)]
@@ -56,7 +57,7 @@ fn main() {
     logger::configure(env::var_os(vars::EXA_DEBUG));
 
     let args: Vec<_> = env::args_os().skip(1).collect();
-    match Options::parse(args.iter().map(|e| e.as_ref()), &LiveVars) {
+    match Options::parse(args.iter().map(std::convert::AsRef::as_ref), &LiveVars) {
         OptionsResult::Ok(options, mut input_paths) => {
 
             // List the current directory by default.

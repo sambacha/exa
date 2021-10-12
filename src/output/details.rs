@@ -161,7 +161,7 @@ impl<'a> Render<'a> {
                 (None,    _)        => {/* Keep Git how it is */},
             }
 
-            let mut table = Table::new(table, self.git, &self.theme);
+            let mut table = Table::new(table, self.git, self.theme);
 
             if self.opts.header {
                 let header = table.header_row();
@@ -175,14 +175,14 @@ impl<'a> Render<'a> {
             self.add_files_to_table(&mut pool, &mut table, &mut rows, &self.files, TreeDepth::root());
 
             for row in self.iterate_with_table(table.unwrap(), rows) {
-                writeln!(w, "{}", row.strings())?
+                writeln!(w, "{}", row.strings())?;
             }
         }
         else {
             self.add_files_to_table(&mut pool, &mut None, &mut rows, &self.files, TreeDepth::root());
 
             for row in self.iterate(rows) {
-                writeln!(w, "{}", row.strings())?
+                writeln!(w, "{}", row.strings())?;
             }
         }
 
