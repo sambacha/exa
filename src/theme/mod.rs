@@ -194,7 +194,7 @@ impl ExtensionMappings {
     }
 
     fn add(&mut self, pattern: glob::Pattern, style: Style) {
-        self.mappings.push((pattern, style))
+        self.mappings.push((pattern, style));
     }
 }
 
@@ -219,8 +219,7 @@ impl render::FiletypeColours for Theme {
 
 impl render::GitColours for Theme {
     fn not_modified(&self)  -> Style { self.ui.punctuation }
-    #[allow(clippy::new_ret_no_self)]
-    fn new(&self)           -> Style { self.ui.git.new }
+    fn added(&self)         -> Style { self.ui.git.new }
     fn modified(&self)      -> Style { self.ui.git.modified }
     fn deleted(&self)       -> Style { self.ui.git.deleted }
     fn renamed(&self)       -> Style { self.ui.git.renamed }
@@ -304,6 +303,15 @@ impl FileNameColours for Theme {
     fn colour_file(&self, file: &File<'_>) -> Style {
         self.exts.colour_file(file).unwrap_or(self.ui.filekinds.normal)
     }
+}
+
+impl render::SecurityCtxColours for Theme {
+    fn none(&self)          -> Style { self.ui.security_context.none }
+    fn selinux_colon(&self) -> Style { self.ui.security_context.selinux.colon }
+    fn selinux_user(&self)  -> Style { self.ui.security_context.selinux.user }
+    fn selinux_role(&self)  -> Style { self.ui.security_context.selinux.role }
+    fn selinux_type(&self)  -> Style { self.ui.security_context.selinux.typ }
+    fn selinux_range(&self) -> Style { self.ui.security_context.selinux.range }
 }
 
 

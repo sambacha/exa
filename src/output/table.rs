@@ -42,6 +42,7 @@ pub struct Columns {
     pub group: bool,
     pub git: bool,
     pub octal: bool,
+    pub security_context: bool,
 
     // Defaults to true:
     pub permissions: bool,
@@ -85,6 +86,10 @@ impl Columns {
             columns.push(Column::Group);
         }
 
+        if self.security_context {
+            columns.push(Column::SecurityContext);
+        }
+
         if self.time_types.modified {
             columns.push(Column::Timestamp(TimeType::Modified));
         }
@@ -123,6 +128,7 @@ pub enum Column {
     Inode,
     GitStatus,
     Octal,
+    SecurityContext,
 }
 
 /// Each column can pick its own **Alignment**. Usually, numbers are
@@ -151,23 +157,24 @@ impl Column {
     /// to have a header row printed.
     pub fn header(self) -> &'static str {
         match self {
-            Self::Permissions   => "Permissions",
-            Self::FileSize      => "Size",
-            Self::Timestamp(t)  => t.header(),
-            Self::Blocks        => "Blocks",
-            Self::User          => "User",
-            Self::Group         => "Group",
-            Self::HardLinks     => "Links",
-            Self::Inode         => "inode",
-            Self::GitStatus     => "Git",
-            Self::Octal         => "Octal",
+            Self::Permissions     => "Permissions",
+            Self::FileSize        => "Size",
+            Self::Timestamp(t)    => t.header(),
+            Self::Blocks          => "Blocks",
+            Self::User            => "User",
+            Self::Group           => "Group",
+            Self::HardLinks       => "Links",
+            Self::Inode           => "inode",
+            Self::GitStatus       => "Git",
+            Self::Octal           => "Octal",
+            Self::SecurityContext => "Security Context",
         }
     }
 }
 
 
 /// Formatting options for file sizes.
-#[allow(clippy::pub_enum_variant_names)]
+#[allow(clippy::enum_variant_names)]
 #[derive(PartialEq, Debug, Copy, Clone)]
 pub enum SizeFormat {
 
@@ -310,7 +317,7 @@ fn determine_time_zone() -> TZResult<TimeZone> {
             } else {
                 format!("/usr/share/zoneinfo/{}", {
                     if file.starts_with(':') {
-                        file.replacen(":", "", 1)
+                        file.replacen(':', "", 1)
                     } else {
                         file
                     }
@@ -382,7 +389,7 @@ impl<'a, 'f> Table<'a> {
     }
 
     pub fn add_widths(&mut self, row: &Row) {
-        self.widths.add_widths(row)
+        self.widths.add_widths(row);
     }
 
     fn permissions_plus(&self, file: &File<'_>, xattrs: bool) -> f::PermissionsPlus {
@@ -421,6 +428,9 @@ impl<'a, 'f> Table<'a> {
             }
             Column::Group => {
                 file.group().render(self.theme, &*self.env.lock_users(), self.user_format)
+            }
+            Column::SecurityContext => {
+                file.security_context().render(self.theme)
             }
             Column::GitStatus => {
                 self.git_status(file).render(self.theme)

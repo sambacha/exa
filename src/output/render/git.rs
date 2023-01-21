@@ -21,7 +21,7 @@ impl f::GitStatus {
     fn render(self, colours: &dyn Colours) -> ANSIString<'static> {
         match self {
             Self::NotModified  => colours.not_modified().paint("-"),
-            Self::New          => colours.new().paint("N"),
+            Self::New          => colours.added().paint("N"),
             Self::Modified     => colours.modified().paint("M"),
             Self::Deleted      => colours.deleted().paint("D"),
             Self::Renamed      => colours.renamed().paint("R"),
@@ -35,8 +35,7 @@ impl f::GitStatus {
 
 pub trait Colours {
     fn not_modified(&self) -> Style;
-    #[allow(clippy::new_ret_no_self)]
-    fn new(&self) -> Style;
+    fn added(&self) -> Style;
     fn modified(&self) -> Style;
     fn deleted(&self) -> Style;
     fn renamed(&self) -> Style;
@@ -60,7 +59,7 @@ pub mod test {
 
     impl Colours for TestColours {
         fn not_modified(&self) -> Style { Fixed(90).normal() }
-        fn new(&self)          -> Style { Fixed(91).normal() }
+        fn added(&self)        -> Style { Fixed(91).normal() }
         fn modified(&self)     -> Style { Fixed(92).normal() }
         fn deleted(&self)      -> Style { Fixed(93).normal() }
         fn renamed(&self)      -> Style { Fixed(94).normal() }
